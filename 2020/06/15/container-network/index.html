@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/06/15/container-network/cnm.PNG">
 <meta property="og:image" content="http://yoursite.com/2020/06/15/container-network/drivers.PNG">
 <meta property="article:published_time" content="2020-06-15T09:36:51.007Z">
-<meta property="article:modified_time" content="2020-06-15T14:56:09.974Z">
+<meta property="article:modified_time" content="2020-06-15T15:23:43.151Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/2020/06/15/container-network/cnm.PNG">
@@ -104,9 +104,22 @@
 <li>Remote Network Drivers: is created by community and other vendors. These drivers can be used to provide integration with incumbent software and hardware.</li>
 </ul>
 </li>
-<li>IPAM Drivers: Docker has native IP Address Management(IPAM) Drivers that *provides default subnets or IP addresses for the networks and endpoints if they are not specified.</li>
+<li>IPAM Drivers: Docker has native IP Address Management(IPAM) Drivers that <em>provides default subnets</em> or IP addresses for the networks and endpoints if they are not specified.</li>
 </ol>
-<h2 id="Docker-Network-Mode"><a href="#Docker-Network-Mode" class="headerlink" title="Docker Network Mode"></a>Docker Network Mode</h2><h3 id="Bridge"><a href="#Bridge" class="headerlink" title="Bridge"></a>Bridge</h3><h3 id="Host"><a href="#Host" class="headerlink" title="Host"></a>Host</h3><h3 id="Overlay"><a href="#Overlay" class="headerlink" title="Overlay"></a>Overlay</h3>
+<h2 id="Docker-Native-Network-Drivers"><a href="#Docker-Native-Network-Drivers" class="headerlink" title="Docker Native Network Drivers"></a>Docker Native Network Drivers</h2><p>The follow drivers are invoked by standard <code>docker network</code> commands. </p>
+<ol>
+<li>Host: container will use the network stack of host. There is no namespace speration, all interfaces on host can be used directly by containers. The container behaves like process on the host. We should prevent port conflicts</li>
+<li>Bridge: create linux bridge on host, containers on bridge can communicate with each other. External access to containers can also be configured through <code>bridge</code> driver.</li>
+<li>Overlay: create overlay network supports multi-host networks. It use a combination of <code>local Linux Bridges</code> and <code>VXLAN</code>.</li>
+<li>MACVLAN:</li>
+</ol>
+<h2 id="Linux-Network-Fundmentals"><a href="#Linux-Network-Fundmentals" class="headerlink" title="Linux Network Fundmentals"></a>Linux Network Fundmentals</h2><ol>
+<li>The Linux Bridge: is a Layer 2 device and forwardd traffic based on MAC addresses which it learns  dynamically by inspecting traffic.</li>
+<li>Network Namespace: is an isolated network stack in the kernek with its own interfaces, routes, and firewall rules. Namespces ensure two containers on same host aren’t able to communicate with each other. CNM network drivers implement separate namespaces for each containers.</li>
+<li>Virtual Ethernet Devices: <strong>veth</strong> is Linux networking interface that acts as a connecting wire between two network namespaces.</li>
+<li>iptables: is a native packet filtering system. The native Docker network drivers utilize iptables extensively to segment network traffic, provide host port mapping, and to mark traffic for load balancing decisions.</li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
