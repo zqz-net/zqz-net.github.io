@@ -70,6 +70,45 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ovs" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/06/28/ovs/" class="article-date">
+  <time class="dt-published" datetime="2020-06-28T03:25:22.846Z" itemprop="datePublished">2020-06-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/06/28/ovs/">ovs</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="OpenvSwitch-接受包的流程分析"><a href="#OpenvSwitch-接受包的流程分析" class="headerlink" title="OpenvSwitch 接受包的流程分析"></a>OpenvSwitch 接受包的流程分析</h2><p>要让ovs接受网卡上的数据，首先要将网卡绑定到OpenvSwitch的port上，命令如下<code>ovs-vsctl add-port br0 eth0</code>，绑定之后，每当有数据包过来时，OVS都会调用数据包的接受函数<code>void ovs_vport_receive(struct vport *vport, struct sk_buff *skb)</code>函数位于<code>datapath/vport.c</code>中。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/28/ovs/" data-id="ckbyimgj30001u8x184t449hr" data-title="ovs" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-C++面试题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/06/20/C++%E9%9D%A2%E8%AF%95%E9%A2%98/" class="article-date">
@@ -327,6 +366,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/06/28/ovs/">ovs</a>
+          </li>
         
           <li>
             <a href="/2020/06/20/C++%E9%9D%A2%E8%AF%95%E9%A2%98/">C++面试题</a>
