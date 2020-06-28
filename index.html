@@ -70,9 +70,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-ovs" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-OVS" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2020/06/28/ovs/" class="article-date">
+    <a href="/2020/06/28/OVS/" class="article-date">
   <time class="dt-published" datetime="2020-06-28T03:25:22.846Z" itemprop="datePublished">2020-06-28</time>
 </a>
     
@@ -84,7 +84,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/06/28/ovs/">ovs</a>
+      <a class="p-name article-title" href="/2020/06/28/OVS/">OVS</a>
     </h1>
   
 
@@ -92,12 +92,12 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="OpenvSwitch-接受包的流程分析"><a href="#OpenvSwitch-接受包的流程分析" class="headerlink" title="OpenvSwitch 接受包的流程分析"></a>OpenvSwitch 接受包的流程分析</h2><p>要让ovs接受网卡上的数据，首先要将网卡绑定到OpenvSwitch的port上，命令如下<code>ovs-vsctl add-port br0 eth0</code>，绑定之后，每当有数据包过来时，OVS都会调用数据包的接受函数<code>void ovs_vport_receive(struct vport *vport, struct sk_buff *skb)</code>函数位于<code>datapath/vport.c</code>中。</p>
-
+        <h2 id="OpenvSwitch-接受包的流程分析"><a href="#OpenvSwitch-接受包的流程分析" class="headerlink" title="OpenvSwitch 接受包的流程分析"></a>OpenvSwitch 接受包的流程分析</h2><p>要让ovs接受网卡上的数据，首先要将网卡绑定到OpenvSwitch的port上，命令如下<code>ovs-vsctl add-port br0 eth0</code>，绑定之后，每当有数据包过来时，OVS都会调用数据包的接受函数<code>int ovs_vport_receive(struct vport *, struct sk_buff *, const struct ip_tunnel_info *)</code>函数位于<code>datapath/vport.c</code>中。代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">int ovs_vport_receive(struct vport *vport, struct sk_buff *skb,</span><br><span class="line">		      const struct ip_tunnel_info *tun_info)</span><br><span class="line">&#123;</span><br><span class="line">	struct sw_flow_key key;</span><br><span class="line">	int error;</span><br><span class="line"></span><br><span class="line">	OVS_CB(skb)-&gt;input_vport &#x3D; vport;</span><br><span class="line">	OVS_CB(skb)-&gt;mru &#x3D; 0;</span><br><span class="line">	OVS_CB(skb)-&gt;cutlen &#x3D; 0;</span><br><span class="line">	if (unlikely(dev_net(skb-&gt;dev) !&#x3D; ovs_dp_get_net(vport-&gt;dp))) &#123;</span><br><span class="line">		u32 mark;</span><br><span class="line"></span><br><span class="line">		mark &#x3D; skb-&gt;mark;</span><br><span class="line">		skb_scrub_packet(skb, true);</span><br><span class="line">		skb-&gt;mark &#x3D; mark;</span><br><span class="line">		tun_info &#x3D; NULL;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ovs_skb_init_inner_protocol(skb);</span><br><span class="line">	skb_clear_ovs_gso_cb(skb);</span><br><span class="line">	&#x2F;* Extract flow from &#39;skb&#39; into &#39;key&#39;. *&#x2F;</span><br><span class="line">	error &#x3D; ovs_flow_key_extract(tun_info, skb, &amp;key);</span><br><span class="line">	if (unlikely(error)) &#123;</span><br><span class="line">		kfree_skb(skb);</span><br><span class="line">		return error;</span><br><span class="line">	&#125;</span><br><span class="line">	ovs_dp_process_packet(skb, &amp;key);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/06/28/ovs/" data-id="ckbyimgj30001u8x184t449hr" data-title="ovs" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/06/28/OVS/" data-id="ckbyism3z0000cox1cl825i4x" data-title="OVS" class="article-share-link">Share</a>
       
       
       
@@ -368,7 +368,7 @@
       <ul>
         
           <li>
-            <a href="/2020/06/28/ovs/">ovs</a>
+            <a href="/2020/06/28/OVS/">OVS</a>
           </li>
         
           <li>
