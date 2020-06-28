@@ -124,7 +124,41 @@ sf_acts = rcu_dereference(flow-&gt;sf_acts);
 ovs_execute_actions(dp, skb, sf_acts, key);
 
 stats_counter = &amp;stats-&gt;n_hit;</code></pre><p>out:<br>    /* Update datapath statistics. <em>/<br>    u64_stats_update_begin(&amp;stats-&gt;syncp);<br>    (</em>stats_counter)++;<br>    stats-&gt;n_mask_hit += n_mask_hit;<br>    u64_stats_update_end(&amp;stats-&gt;syncp);<br>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">void ovs_vport_send(struct vport *vport, struct sk_buff *skb, u8 mac_proto)</span><br><span class="line">&#123;</span><br><span class="line">	int mtu &#x3D; vport-&gt;dev-&gt;mtu;</span><br><span class="line"></span><br><span class="line">	switch (vport-&gt;dev-&gt;type) &#123;</span><br><span class="line">	case ARPHRD_NONE:</span><br><span class="line">		if (mac_proto &#x3D;&#x3D; MAC_PROTO_ETHERNET) &#123;</span><br><span class="line">			skb_reset_network_header(skb);</span><br><span class="line">			skb_reset_mac_len(skb);</span><br><span class="line">			skb-&gt;protocol &#x3D; htons(ETH_P_TEB);</span><br><span class="line">		&#125; else if (mac_proto !&#x3D; MAC_PROTO_NONE) &#123;</span><br><span class="line">			WARN_ON_ONCE(1);</span><br><span class="line">			goto drop;</span><br><span class="line">		&#125;</span><br><span class="line">		break;</span><br><span class="line">	case ARPHRD_ETHER:</span><br><span class="line">		if (mac_proto !&#x3D; MAC_PROTO_ETHERNET)</span><br><span class="line">			goto drop;</span><br><span class="line">		break;</span><br><span class="line">	default:</span><br><span class="line">		goto drop;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	if (unlikely(packet_length(skb, vport-&gt;dev) &gt; mtu &amp;&amp;</span><br><span class="line">		     !skb_is_gso(skb))) &#123;</span><br><span class="line">		net_warn_ratelimited(&quot;%s: dropped over-mtu packet: %d &gt; %d\n&quot;,</span><br><span class="line">				     vport-&gt;dev-&gt;name,</span><br><span class="line">				     packet_length(skb, vport-&gt;dev), mtu);</span><br><span class="line">		vport-&gt;dev-&gt;stats.tx_errors++;</span><br><span class="line">		goto drop;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	skb-&gt;dev &#x3D; vport-&gt;dev;</span><br><span class="line">	vport-&gt;ops-&gt;send(skb);</span><br><span class="line">	return;</span><br><span class="line"></span><br><span class="line">drop:</span><br><span class="line">	kfree_skb(skb);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">下面是ovs_vport_send的&lt;font color &#x3D; &quot;red&quot;&gt;源代码&lt;&#x2F;font&gt;：</span><br></pre></td></tr></table></figure>
+<p>void ovs_vport_send(struct vport *vport, struct sk_buff *skb, u8 mac_proto)<br>{<br>    int mtu = vport-&gt;dev-&gt;mtu;</p>
+<pre><code>switch (vport-&gt;dev-&gt;type) {
+case ARPHRD_NONE:
+    if (mac_proto == MAC_PROTO_ETHERNET) {
+        skb_reset_network_header(skb);
+        skb_reset_mac_len(skb);
+        skb-&gt;protocol = htons(ETH_P_TEB);
+    } else if (mac_proto != MAC_PROTO_NONE) {
+        WARN_ON_ONCE(1);
+        goto drop;
+    }
+    break;
+case ARPHRD_ETHER:
+    if (mac_proto != MAC_PROTO_ETHERNET)
+        goto drop;
+    break;
+default:
+    goto drop;
+}
+
+if (unlikely(packet_length(skb, vport-&gt;dev) &gt; mtu &amp;&amp;
+         !skb_is_gso(skb))) {
+    net_warn_ratelimited(&quot;%s: dropped over-mtu packet: %d &gt; %d\n&quot;,
+                 vport-&gt;dev-&gt;name,
+                 packet_length(skb, vport-&gt;dev), mtu);
+    vport-&gt;dev-&gt;stats.tx_errors++;
+    goto drop;
+}
+
+skb-&gt;dev = vport-&gt;dev;
+vport-&gt;ops-&gt;send(skb);
+return;</code></pre><p>drop:<br>    kfree_skb(skb);<br>}</p>
+<p>```</p>
+
       
     </div>
     <footer class="article-footer">
