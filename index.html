@@ -94,11 +94,11 @@
       
         <h2 id="skb-buff数据结构"><a href="#skb-buff数据结构" class="headerlink" title="skb_buff数据结构"></a>skb_buff数据结构</h2><h2 id="OVS的packet处理流程"><a href="#OVS的packet处理流程" class="headerlink" title="OVS的packet处理流程"></a>OVS的packet处理流程</h2><ol>
 <li>驱动调用netif_receive_skb(struct sk_buff *skb)从网络中接收数据。</li>
-<li>然后调用<code>netdev_port_receive()/vport_netdev.c</code>函数</li>
-<li><code>netdev_port_receive()/vport_netdev.c</code>调用<code>ovs_vport_receive()\vport.c</code></li>
-<li><code>ovs_vport_receive()\vport.c</code>调用<code>ovs_dp_process_packet()\datapath.c</code></li>
-<li>如果packet有流表匹配到，则<code>ovs_dp_process_packet()\datapath.c</code>调用<code>ovs_execute_actions()\action.c</code></li>
-<li><code>ovs_execute_actions()\action.c</code>调用<code>do_execute_actions()\action.c</code>，该函数中的level如果等于一，则调用<code>process_deferred_actions() \action.c</code>，<code>process_deferred_actions() \action.c</code>中有一个action fifo，对于每一个在fifo的action都会调用<code>do_execute_actions()\action.c</code>，如果action执行完毕之后，则会调用<code>ovs_dp_process_packet()\datapath.c</code>进行下一个packet的处理。</li>
+<li>然后调用<code>netdev_port_receive() datapath/vport_netdev.c</code>函数</li>
+<li><code>netdev_port_receive() datapath/vport_netdev.c</code>调用<code>ovs_vport_receive() datapath/vport.c</code></li>
+<li><code>ovs_vport_receive()datapath/vport.c</code>调用<code>ovs_dp_process_packet() datapath/datapath.c</code></li>
+<li>如果packet有流表匹配到，则<code>ovs_dp_process_packet() datapath/datapath.c</code>调用<code>ovs_execute_actions() datapath/action.c</code></li>
+<li><code>ovs_execute_actions() datapath/action.c</code>调用<code>do_execute_actions() datapath/action.c</code>，该函数中的level如果等于一，则调用<code>process_deferred_actions() datapath/action.c</code>，<code>process_deferred_actions() datapath/action.c</code>中有一个action fifo，对于每一个在fifo的action都会调用<code>do_execute_actions()datapath/action.c</code>，如果action执行完毕之后，则会调用<code>ovs_dp_process_packet() datapath/datapath.c</code>进行下一个packet的处理。</li>
 </ol>
 
       
