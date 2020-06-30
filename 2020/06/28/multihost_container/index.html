@@ -6,15 +6,15 @@
   
   <title>multihost_container | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="OpenvSwitch with GRE tunnel12345678910111213141516171819# del brifconfig br0 downbrctl delbr br0ovs-vsctl del-br ovs_br0# create ovs_br0 connect to br0ovs-vsctl add-br ovs_br0 -- set bridge ovs_br0 da">
+  <meta name="description" content="OpenvSwitch with GRE tunnel12345678# configure ovsovs-vsctl add-br br0ip link add veth0 type peer name veth1ovs-vsctl add-port br0 veth1brctl addif docker0 veth0ip link set veth1 upip link set veth0 u">
 <meta property="og:type" content="article">
 <meta property="og:title" content="multihost_container">
 <meta property="og:url" content="http://yoursite.com/2020/06/28/multihost_container/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="OpenvSwitch with GRE tunnel12345678910111213141516171819# del brifconfig br0 downbrctl delbr br0ovs-vsctl del-br ovs_br0# create ovs_br0 connect to br0ovs-vsctl add-br ovs_br0 -- set bridge ovs_br0 da">
+<meta property="og:description" content="OpenvSwitch with GRE tunnel12345678# configure ovsovs-vsctl add-br br0ip link add veth0 type peer name veth1ovs-vsctl add-port br0 veth1brctl addif docker0 veth0ip link set veth1 upip link set veth0 u">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-06-28T13:56:34.129Z">
-<meta property="article:modified_time" content="2020-06-29T15:15:42.914Z">
+<meta property="article:modified_time" content="2020-06-30T08:24:18.054Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
@@ -94,7 +94,7 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="OpenvSwitch-with-GRE-tunnel"><a href="#OpenvSwitch-with-GRE-tunnel" class="headerlink" title="OpenvSwitch with GRE tunnel"></a>OpenvSwitch with GRE tunnel</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># del br</span><br><span class="line">ifconfig br0 down</span><br><span class="line">brctl delbr br0</span><br><span class="line">ovs-vsctl del-br ovs_br0</span><br><span class="line"># create ovs_br0 connect to br0</span><br><span class="line">ovs-vsctl add-br ovs_br0 -- set bridge ovs_br0 datapath_type&#x3D;netdev</span><br><span class="line">ovs-vsctl add-port ovs_br0 gre0</span><br><span class="line">ovs-vsctl set interface gre0 type&#x3D;gre options:remote_ip&#x3D;192.168.1.102</span><br><span class="line"># add br0 to connect multiple docker</span><br><span class="line">brctl addbr br0</span><br><span class="line"># config br0&#39;s ip address</span><br><span class="line">ifconfig br0 192.168.6.1&#x2F;24</span><br><span class="line">ifconfig br0 up</span><br><span class="line">brctl addif br0 ovs_br0</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br><span class="line">ovs-vsctl show</span><br><span class="line">brctl show</span><br><span class="line"># restart docker</span><br></pre></td></tr></table></figure>
+        <h2 id="OpenvSwitch-with-GRE-tunnel"><a href="#OpenvSwitch-with-GRE-tunnel" class="headerlink" title="OpenvSwitch with GRE tunnel"></a>OpenvSwitch with GRE tunnel</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># configure ovs</span><br><span class="line">ovs-vsctl add-br br0</span><br><span class="line">ip link add veth0 type peer name veth1</span><br><span class="line">ovs-vsctl add-port br0 veth1</span><br><span class="line">brctl addif docker0 veth0</span><br><span class="line">ip link set veth1 up</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ovs-vsctl add-port br0 gre0 -- set interface gre0 type&#x3D;gre options:remote_ip&#x3D;192.168.1.150</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
@@ -107,6 +107,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2020/06/30/ovs%20packet%20process/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ovs packet process
+        
+      </div>
+    </a>
   
   
     <a href="/2020/06/28/ovs/" id="article-nav-older" class="article-nav-link-wrap">
@@ -163,6 +172,10 @@
       <ul>
         
           <li>
+            <a href="/2020/06/30/ovs%20packet%20process/">ovs packet process</a>
+          </li>
+        
+          <li>
             <a href="/2020/06/28/multihost_container/">multihost_container</a>
           </li>
         
@@ -176,10 +189,6 @@
         
           <li>
             <a href="/2020/06/15/container-network/">Container Network</a>
-          </li>
-        
-          <li>
-            <a href="/2020/06/13/Tunnel/">隧道协议那些事</a>
           </li>
         
       </ul>

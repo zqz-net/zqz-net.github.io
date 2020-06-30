@@ -70,6 +70,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ovs packet process" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/06/30/ovs%20packet%20process/" class="article-date">
+  <time class="dt-published" datetime="2020-06-30T08:25:11.486Z" itemprop="datePublished">2020-06-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/06/30/ovs%20packet%20process/">ovs packet process</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="skb-buff数据结构"><a href="#skb-buff数据结构" class="headerlink" title="skb_buff数据结构"></a>skb_buff数据结构</h2><h2 id="OVS的packet处理流程"><a href="#OVS的packet处理流程" class="headerlink" title="OVS的packet处理流程"></a>OVS的packet处理流程</h2><ol>
+<li>驱动调用netif_receive_skb(struct sk_buff *skb)从网络中接收数据。</li>
+<li>然后调用<code>netdev_port_receive()/vport_netdev.c</code>函数</li>
+<li><code>netdev_port_receive()/vport_netdev.c</code>调用<code>ovs_vport_receive()\vport.c</code></li>
+<li><code>ovs_vport_receive()\vport.c</code>调用<code>ovs_dp_process_packet()\datapath.c</code></li>
+<li>如果packet有流表匹配到，则<code>ovs_dp_process_packet()\datapath.c</code>调用<code>ovs_execute_actions()\action.c</code></li>
+<li><code>ovs_execute_actions()\action.c</code>调用<code>do_execute_actions()\action.c</code>，该函数中的level如果等于一，则调用<code>process_deferred_actions() \action.c</code>，<code>process_deferred_actions() \action.c</code>中有一个action fifo，对于每一个在fifo的action都会调用<code>do_execute_actions()\action.c</code>，如果action执行完毕之后，则会调用<code>ovs_dp_process_packet()\datapath.c</code>进行下一个packet的处理。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/30/ovs%20packet%20process/" data-id="ckc1ooim40000acx17zhvcs2h" data-title="ovs packet process" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-multihost_container" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/06/28/multihost_container/" class="article-date">
@@ -92,7 +138,7 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="OpenvSwitch-with-GRE-tunnel"><a href="#OpenvSwitch-with-GRE-tunnel" class="headerlink" title="OpenvSwitch with GRE tunnel"></a>OpenvSwitch with GRE tunnel</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># del br</span><br><span class="line">ifconfig br0 down</span><br><span class="line">brctl delbr br0</span><br><span class="line">ovs-vsctl del-br ovs_br0</span><br><span class="line"># create ovs_br0 connect to br0</span><br><span class="line">ovs-vsctl add-br ovs_br0 -- set bridge ovs_br0 datapath_type&#x3D;netdev</span><br><span class="line">ovs-vsctl add-port ovs_br0 gre0</span><br><span class="line">ovs-vsctl set interface gre0 type&#x3D;gre options:remote_ip&#x3D;192.168.1.102</span><br><span class="line"># add br0 to connect multiple docker</span><br><span class="line">brctl addbr br0</span><br><span class="line"># config br0&#39;s ip address</span><br><span class="line">ifconfig br0 192.168.6.1&#x2F;24</span><br><span class="line">ifconfig br0 up</span><br><span class="line">brctl addif br0 ovs_br0</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br><span class="line">ovs-vsctl show</span><br><span class="line">brctl show</span><br><span class="line"># restart docker</span><br></pre></td></tr></table></figure>
+        <h2 id="OpenvSwitch-with-GRE-tunnel"><a href="#OpenvSwitch-with-GRE-tunnel" class="headerlink" title="OpenvSwitch with GRE tunnel"></a>OpenvSwitch with GRE tunnel</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># configure ovs</span><br><span class="line">ovs-vsctl add-br br0</span><br><span class="line">ip link add veth0 type peer name veth1</span><br><span class="line">ovs-vsctl add-port br0 veth1</span><br><span class="line">brctl addif docker0 veth0</span><br><span class="line">ip link set veth1 up</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ovs-vsctl add-port br0 gre0 -- set interface gre0 type&#x3D;gre options:remote_ip&#x3D;192.168.1.150</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
@@ -423,6 +469,10 @@
       <ul>
         
           <li>
+            <a href="/2020/06/30/ovs%20packet%20process/">ovs packet process</a>
+          </li>
+        
+          <li>
             <a href="/2020/06/28/multihost_container/">multihost_container</a>
           </li>
         
@@ -436,10 +486,6 @@
         
           <li>
             <a href="/2020/06/15/container-network/">Container Network</a>
-          </li>
-        
-          <li>
-            <a href="/2020/06/13/Tunnel/">隧道协议那些事</a>
           </li>
         
       </ul>
