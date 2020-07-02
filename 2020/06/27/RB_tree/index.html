@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   
   
-  <title>multihost_container | Hexo</title>
+  <title>RB_tree | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="OpenvSwitch with GRE tunnel12345678# configure ovsovs-vsctl add-br br0ip link add veth0 type peer name veth1ovs-vsctl add-port br0 veth1brctl addif docker５0 veth0ip link set veth1 upip link set veth0">
+  <meta name="description" content="红黑树定义（增设外部节点null，使其成为真二叉树） 由红黑两类节点组成BBST 树根必为黑色 外部节点均为黑色 其余节点，若为红，只能有黑孩子（红节点的父子均为黑色的节点，所以不可能出现父子均为黑色节点的情况） 从外部节点到根，途径的黑节点数目相同 若插入一个节点，将其染红，因为这样不会破坏规则（2，3，5），但是规则4需要去考虑限制">
 <meta property="og:type" content="article">
-<meta property="og:title" content="multihost_container">
-<meta property="og:url" content="http://yoursite.com/2020/06/28/multihost_container/index.html">
+<meta property="og:title" content="RB_tree">
+<meta property="og:url" content="http://yoursite.com/2020/06/27/RB_tree/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="OpenvSwitch with GRE tunnel12345678# configure ovsovs-vsctl add-br br0ip link add veth0 type peer name veth1ovs-vsctl add-port br0 veth1brctl addif docker５0 veth0ip link set veth1 upip link set veth0">
+<meta property="og:description" content="红黑树定义（增设外部节点null，使其成为真二叉树） 由红黑两类节点组成BBST 树根必为黑色 外部节点均为黑色 其余节点，若为红，只能有黑孩子（红节点的父子均为黑色的节点，所以不可能出现父子均为黑色节点的情况） 从外部节点到根，途径的黑节点数目相同 若插入一个节点，将其染红，因为这样不会破坏规则（2，3，5），但是规则4需要去考虑限制">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-06-28T13:56:34.129Z">
-<meta property="article:modified_time" content="2020-07-01T12:47:11.190Z">
+<meta property="article:published_time" content="2020-06-27T14:09:03.084Z">
+<meta property="article:modified_time" content="2020-07-02T08:06:32.487Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
@@ -72,10 +72,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-multihost_container" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-RB_tree" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2020/06/28/multihost_container/" class="article-date">
-  <time class="dt-published" datetime="2020-06-28T13:56:34.129Z" itemprop="datePublished">2020-06-28</time>
+    <a href="/2020/06/27/RB_tree/" class="article-date">
+  <time class="dt-published" datetime="2020-06-27T14:09:03.084Z" itemprop="datePublished">2020-06-27</time>
 </a>
     
   </div>
@@ -86,7 +86,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      multihost_container
+      RB_tree
     </h1>
   
 
@@ -94,13 +94,19 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="OpenvSwitch-with-GRE-tunnel"><a href="#OpenvSwitch-with-GRE-tunnel" class="headerlink" title="OpenvSwitch with GRE tunnel"></a>OpenvSwitch with GRE tunnel</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># configure ovs</span><br><span class="line">ovs-vsctl add-br br0</span><br><span class="line">ip link add veth0 type peer name veth1</span><br><span class="line">ovs-vsctl add-port br0 veth1</span><br><span class="line">brctl addif docker５0 veth0</span><br><span class="line">ip link set veth1 up</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ovs-vsctl add-port br0 gre0 -- set interface gre0 type&#x3D;gre options:remote_ip&#x3D;192.168.1.150</span><br></pre></td></tr></table></figure>
-<p>##　容器的连接，允许所有容器间互联</p>
+        <h2 id="红黑树定义（增设外部节点null，使其成为真二叉树）"><a href="#红黑树定义（增设外部节点null，使其成为真二叉树）" class="headerlink" title="红黑树定义（增设外部节点null，使其成为真二叉树）"></a>红黑树定义（增设外部节点null，使其成为真二叉树）</h2><ol>
+<li>由红黑两类节点组成BBST</li>
+<li>树根必为黑色</li>
+<li>外部节点均为黑色</li>
+<li>其余节点，若为红，只能有黑孩子（红节点的父子均为黑色的节点，所以不可能出现父子均为黑色节点的情况）</li>
+<li>从外部节点到根，途径的黑节点数目相同</li>
+<li>若插入一个节点，将其染红，因为这样不会破坏规则（2，3，5），但是规则4需要去考虑<h2 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h2></li>
+</ol>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/06/28/multihost_container/" data-id="ckbz506n80000mkx14of65cug" data-title="multihost_container" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/06/27/RB_tree/" data-id="ckc4jcij500008sx18ssc5lnu" data-title="RB_tree" class="article-share-link">Share</a>
       
       
       
@@ -110,19 +116,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2020/06/30/ovs%20packet%20process/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2020/06/28/ovs/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          ovs packet process
+          ovs
         
       </div>
     </a>
   
   
-    <a href="/2020/06/28/ovs/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2020/06/20/C++%E9%9D%A2%E8%AF%95%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">ovs</div>
+      <div class="article-nav-title">C++面试题</div>
     </a>
   
 </nav>
