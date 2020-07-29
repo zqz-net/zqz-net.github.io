@@ -14,7 +14,7 @@
 <meta property="og:description" content="NS3 点对点仿真网络环境搭建 创建NodeContianer，点对点链路需要两个Node，每个Node，我们可以将其视为主机，我们需要在主机上添加NIC。 NetDevContainer代表一张网卡，我们需要将其install到主机上，NetDevContainer devices &#x3D; point2point.install(nodes)。 为主机安装协议栈InternetStackHelper">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-07-29T06:13:49.255Z">
-<meta property="article:modified_time" content="2020-07-29T06:37:02.004Z">
+<meta property="article:modified_time" content="2020-07-29T06:44:27.632Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
@@ -100,39 +100,8 @@
 <li>为主机安装协议栈<code>InternetStackHelper stack; stack.install(nodes)</code>。</li>
 <li>为NIC分配IP地址，流程如下<code>Ipv4AddressHelper address; address.SetBase(&quot;10.0.1.0&quot;, &quot;255.255.255.0&quot;); Ipv4InterfaceContainer interfaces = address.Assgin(devices);</code>。</li>
 <li>创建Application，生成流量去测试网络。</li>
-<li>```cpp</li>
-<li>/**</li>
-<li>This program copy the ns3 tutorial first.cc</li>
-<li>*/</li>
-<li>#include “ns3/core-module.h”</li>
-<li>#include “ns3/network-module.h”</li>
-<li>#include “ns3/internet-module.h”</li>
-<li>#include “ns3/point-to-point-module.h”</li>
-<li>#include “ns3/applications-module.h”</li>
-<li>using namespace ns3;</li>
-<li>int main()</li>
-<li>{<ol>
-<li>//part of first.cc</li>
-<li>NodeContainer nodes;</li>
-<li>Nodes.Create(2);</li>
-<li></li>
-<li>PointToPointHelper point2point;</li>
-<li>point2point.set(“DataRate”, StringValue(“5Mbps”));</li>
-<li></li>
-<li>NetDeviceContainer devices;</li>
-<li>devices = point2point.Install(nodes);</li>
-<li>//protocol stack</li>
-<li>InternetStackHelper stack;</li>
-<li>stack.Install(nodes);</li>
-<li>//Set IP address</li>
-<li>Ipv4AddressHelper address;</li>
-<li>address.SetBase(“192.168.1.0”, “255.255.255.0”);</li>
-<li>Ipv4InterfaceContainer interfaces = address.Assgin(devices);</li>
-<li></li>
 </ol>
-</li>
-<li>}</li>
-</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line">This program copy the ns3 tutorial first.cc</span><br><span class="line">*&#x2F;</span><br><span class="line">#include &quot;ns3&#x2F;core-module.h&quot;</span><br><span class="line">#include &quot;ns3&#x2F;network-module.h&quot;</span><br><span class="line">#include &quot;ns3&#x2F;internet-module.h&quot;</span><br><span class="line">#include &quot;ns3&#x2F;point-to-point-module.h&quot;</span><br><span class="line">#include &quot;ns3&#x2F;applications-module.h&quot;</span><br><span class="line">using namespace ns3;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F;part of first.cc</span><br><span class="line">    NodeContainer nodes;</span><br><span class="line">    nodes.Create(2);</span><br><span class="line"></span><br><span class="line">    PointToPointHelper point2point;</span><br><span class="line">    point2point.set(&quot;DataRate&quot;, StringValue(&quot;5Mbps&quot;));</span><br><span class="line"></span><br><span class="line">    NetDeviceContainer devices;</span><br><span class="line">    devices &#x3D; point2point.Install(nodes);</span><br><span class="line">    &#x2F;&#x2F;protocol stack</span><br><span class="line">    InternetStackHelper stack;</span><br><span class="line">    stack.Install(nodes);</span><br><span class="line">    &#x2F;&#x2F;Set IP address</span><br><span class="line">    Ipv4AddressHelper address;</span><br><span class="line">    address.SetBase(&quot;192.168.1.0&quot;, &quot;255.255.255.0&quot;);</span><br><span class="line">    Ipv4InterfaceContainer interfaces &#x3D; address.Assgin(devices);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Create Application</span><br><span class="line">    ...</span><br><span class="line">    &#x2F;&#x2F; Run Simulator</span><br><span class="line">    Simulator::Run();</span><br><span class="line">    Simulator::Destroy();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
